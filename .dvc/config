@@ -1,0 +1,4 @@
+[core]
+    remote = hippodata
+['remote "hippodata"']
+    url = gdrive://1ulwaR9jNKgiCBM4HlRRFWDGQo0N5HwM6
