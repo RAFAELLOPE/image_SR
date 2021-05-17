@@ -30,8 +30,8 @@ class Trainer:
 
     def psnr_loss(self, x, x_hat):
         eps = 0.001
-        mse = np.sqrt(np.sum((x - x_hat)**2))
-        psnr = (np.max(x))/(mse + eps)
+        mse = torch.sqrt(torch.sum((x - x_hat)**2))
+        psnr = (torch.max(x))/(mse + eps)
         loss = 1. / (psnr + eps)
         return loss
     
