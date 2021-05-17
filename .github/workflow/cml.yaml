@@ -10,5 +10,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           run: |
               # My ML workflow goes here
-              python train.py
+              python evaluation.py
               
