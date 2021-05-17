@@ -1,0 +1,14 @@
+name: Super_Resolution_Training
+on: [push]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: cml-run
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+              # My ML workflow goes here
+              python train.py
+              
