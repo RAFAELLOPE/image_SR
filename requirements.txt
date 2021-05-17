@@ -4,3 +4,4 @@ nibabel
 torch
 json
 scipy
+matplotlib

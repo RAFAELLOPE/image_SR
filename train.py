@@ -5,9 +5,11 @@ from model import DCSRN
 from get_data import Data
 import numpy as np
 import torch
+import matplotlib.pylab as plt
 
 class Trainer:
     def __init__(self, optimizer, batch_size, learning_rate, n_epochs, n_channels, vol_shape=(60,60,60)):
+        self.n_channels = n_channels
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
         self.vol_shape = vol_shape
         self.model = DCSRN(n_chans=n_channels).to(device=device)
@@ -35,6 +37,15 @@ class Trainer:
         loss = 1. / (psnr + eps)
         return loss
     
+    def save_model(self, tr_loss, vl_loss, path="/model/model.py"):
+        checkpoint = dict()
+        checkpoint['Training loss'] = tr_loss
+        checkpoint['Validation loss'] = vl_loss
+        checkpoint['Model'] = self.model.state_dict()
+        checkpoint['Optimizer'] = self.optimizer.state_dict()
+        checkpoint['N_channels'] = self.n_channels
+        torch.save(checkpoint, path)
+
 
     def train(self):
         training_err_list = list()
@@ -67,17 +78,29 @@ class Trainer:
 
                 vl_loss += loss.item()/self.val_loader.batch_size
             
-            print(f"Epoch {epoch}; Training error:{tr_loss}; Validation error:{vl_loss};")
-            training_err_list.append(tr_loss)
-            validation_err_list.append(vl_loss)
-        
+            print(f"Epoch {epoch}; Training error:{tr_loss/self.n_epochs}; Validation error:{vl_loss/self.n_epochs};")
+            training_err_list.append(tr_loss/self.n_epochs)
+            validation_err_list.append(vl_loss/self.n_epochs)
+            self.save_model(training_err_list, validation_err_list)
         
         return training_err_list, validation_err_list
 
-    
-
 
 if __name__ == "__main__":
-    pass
+    optimizer = optim.Adam
+    batch_size = 5
+    learning_rate = 1e-5
+    n_epochs = 100
+    n_channels = 24
+    
+    trainer = Trainer(optimizer=optimizer,
+                      batch_size=batch_size,
+                      learning_rate=learning_rate,
+                      n_epochs=n_epochs,
+                      n_channels=n_channels)
+    
+    trainer.train()
+
+
 
 
